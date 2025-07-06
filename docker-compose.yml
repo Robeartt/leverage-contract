@@ -1,0 +1,16 @@
+services:
+  leverage-contract:
+    image: esteblock/soroban-preview:22.0.1@sha256:186404e5df5d0a791d31807958486ef1d5549c1bc90e96ebabb7cc0fdd195740
+    container_name: leverage-contract
+    volumes:
+      - .:/workspace
+    ipc: host
+    command: tail -f /dev/null
+    env_file:
+      - .env
+    networks:
+      - soroswap-network
+
+networks:
+  soroswap-network:
+    external: true
