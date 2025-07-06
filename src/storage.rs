@@ -1,4 +1,5 @@
 use soroban_sdk::{Address, Env, contracttype};
+use soroban_sdk::unwrap::UnwrapOptimized;
 use crate::errors::LeverageError;
 
 #[derive(Clone)]

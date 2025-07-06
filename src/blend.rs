@@ -1,12 +1,22 @@
 use soroban_sdk::{vec, Address, Env, Vec};
-use crate::{errors::LeverageError, storage::Config};
+use crate::storage::Config;
 
 mod blend {
     soroban_sdk::contractimport!(file = "./pool.wasm");
 }
 
 pub use blend::Client as PoolClient;
-pub use blend::{Request, RequestType, Positions};
+pub use blend::{Request, Positions};
+
+// Define the RequestType enum with explicit u32 values
+#[derive(Clone, PartialEq)]
+#[repr(u32)]
+pub enum RequestType {
+    SupplyCollateral = 2,
+    WithdrawCollateral = 3,
+    Borrow = 4,
+    Repay = 5,
+}
 
 /// Deposit collateral to Blend pool
 pub fn deposit(
@@ -14,11 +24,7 @@ pub fn deposit(
     config: &Config,
     from: &Address,
     amount: i128,
-) -> Result<Positions, LeverageError> {
-    if amount <= 0 {
-        return Err(LeverageError::InvalidAmount);
-    }
-
+) -> Positions {
     let pool_client = PoolClient::new(e, &config.blend_pool);
     let request = Request {
         request_type: RequestType::SupplyCollateral as u32,
@@ -26,7 +32,7 @@ pub fn deposit(
         amount,
     };
 
-    Ok(pool_client.submit(from, from, from, &vec![e, request]))
+    pool_client.submit(from, from, from, &vec![e, request])
 }
 
 /// Withdraw collateral from Blend pool
@@ -36,11 +42,7 @@ pub fn withdraw(
     from: &Address,
     to: &Address,
     amount: i128,
-) -> Result<Positions, LeverageError> {
-    if amount <= 0 {
-        return Err(LeverageError::InvalidAmount);
-    }
-
+) -> Positions {
     let pool_client = PoolClient::new(e, &config.blend_pool);
     let request = Request {
         request_type: RequestType::WithdrawCollateral as u32,
@@ -48,7 +50,7 @@ pub fn withdraw(
         amount,
     };
 
-    Ok(pool_client.submit(from, from, to, &vec![e, request]))
+    pool_client.submit(from, from, to, &vec![e, request])
 }
 
 /// Borrow debt asset from Blend pool
@@ -58,11 +60,7 @@ pub fn borrow(
     from: &Address,
     to: &Address,
     amount: i128,
-) -> Result<Positions, LeverageError> {
-    if amount <= 0 {
-        return Err(LeverageError::InvalidAmount);
-    }
-
+) -> Positions {
     let pool_client = PoolClient::new(e, &config.blend_pool);
     let request = Request {
         request_type: RequestType::Borrow as u32,
@@ -70,7 +68,7 @@ pub fn borrow(
         amount,
     };
 
-    Ok(pool_client.submit(from, from, to, &vec![e, request]))
+    pool_client.submit(from, from, to, &vec![e, request])
 }
 
 /// Repay debt to Blend pool
@@ -79,11 +77,7 @@ pub fn repay(
     config: &Config,
     from: &Address,
     amount: i128,
-) -> Result<Positions, LeverageError> {
-    if amount <= 0 {
-        return Err(LeverageError::InvalidAmount);
-    }
-
+) -> Positions {
     let pool_client = PoolClient::new(e, &config.blend_pool);
     let request = Request {
         request_type: RequestType::Repay as u32,
@@ -91,7 +85,7 @@ pub fn repay(
         amount,
     };
 
-    Ok(pool_client.submit(from, from, from, &vec![e, request]))
+    pool_client.submit(from, from, from, &vec![e, request])
 }
 
 /// Get positions for an address
