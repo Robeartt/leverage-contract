@@ -10,6 +10,6 @@
     "resolveJsonModule": true, // Allow importing JSON files
     "skipLibCheck": true // Skip type checking of declaration files
   },
-  "include": ["src/**/*.ts"], // Include all TypeScript files in src
+  "include": ["src/**/*.ts", "scripts/checkBalance.ts"], // Include all TypeScript files in src
   "exclude": ["node_modules"] // Exclude node_modules
 }
