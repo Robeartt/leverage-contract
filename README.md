@@ -9,3 +9,9 @@ Inside the Docker Container:
 ```
 cargo build --target wasm32-unknown-unknown --release
 ```
+
+Execute the FlashLoan
+```
+yarn
+yarn ts-node scripts/getLeveragedPosition.ts
+```
